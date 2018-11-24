@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -12,6 +12,117 @@
       <strong>We're sorry but raw doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
     <div id="app"></div>
-    <!-- built files will be auto injected -->
   </body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Accelerometer Javascript Test</title>
+<meta name="viewport" content="width=device-width,user-scalable=no" />
+<style>
+#content {
+	font-family: helvetica, arial, sans serif;
+  margin: 0 auto;
+  width: 360px;
+  height: 720px;
+  overflow: hidden;
+}
+
+#container {
+  position: relative
+}
+#sphere {
+	position: absolute;	
+  z-index: 11;
+	width: 150px;
+	height: 150px;
+  /* border: 5px solid black; */
+	background-color: transparent;
+  width: 800px;
+  height: 1500px;
+  overflow: hidden;
+  background-image: url(assets/images/mask.png);
+}
+
+#image {
+  position: relative;
+  left: 0;
+  top: 0;
+  height: 720px;
+  width: 400px;;
+  background: url(assets/images/1.jpg);
+}
+</style>
+</head>
+
+<body>
+<div id="content">
+  <div id="container">
+    <div id="sphere"></div>
+    <div id="image"></div>
+  </div>
+
+</div>
+<script type="text/javascript">
+
+var x = 0, y = 0,
+    vx = 0, vy = 0,
+	ax = 0, ay = 0;
+	
+var sphere = document.getElementById("sphere");
+
+if (window.DeviceMotionEvent != undefined) {
+	window.ondevicemotion = function(e) {
+    
+    ax = event.accelerationIncludingGravity.x * 10;
+    ay = event.accelerationIncludingGravity.y * 10;
+    
+		document.getElementById("accelerationX").innerHTML = e.accelerationIncludingGravity.x;
+		document.getElementById("accelerationY").innerHTML = e.accelerationIncludingGravity.y;
+		document.getElementById("accelerationZ").innerHTML = e.accelerationIncludingGravity.z;
+
+		if ( e.rotationRate ) {
+			document.getElementById("rotationAlpha").innerHTML = e.rotationRate.alpha;
+			document.getElementById("rotationBeta").innerHTML = e.rotationRate.beta;
+			document.getElementById("rotationGamma").innerHTML = e.rotationRate.gamma;
+		}		
+	}
+
+	setInterval( function() {
+		var landscapeOrientation = window.innerWidth/window.innerHeight > 1;
+		if ( landscapeOrientation) {
+			vx = vx + ay;
+			vy = vy + ax;
+		} else {
+			vy = vy - ay;
+			vx = vx + ax;
+		}
+		vx = vx * 0.97;
+		vy = vy * 0.97;
+		y = parseInt(y + vy / 100);
+		x = parseInt(x + vx / 100);
+		
+		boundingBoxCheck();
+		
+		sphere.style.top = y + "px";
+		sphere.style.left = x + "px";
+		
+	}, 18);
+} 
+
+
+function boundingBoxCheck(){
+	if (x<-320) { x = -320; vx = -vx; }
+  if (y<-660) { y = -660; vy = -vy; }
+	if (x>document.documentElement.clientWidth-440) { x = document.documentElement.clientWidth-440; vx = -vx; }
+	if (y>document.documentElement.clientHeight-660) { y = document.documentElement.clientHeight-660; vy = -vy; }
+	
+}
+
+</script>
+
+</body>
 </html>
+
